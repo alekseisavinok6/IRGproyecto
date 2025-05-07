@@ -1,22 +1,24 @@
-const mongoose = require('mongoose');
+// servicios/Plato.js
+const pool = require('../baseDatos/db');
 
-const platoSchema = new mongoose.Schema({
-  nombre_plato: { type: String, required: true },
-  tipo: {
-    type: String,
-    enum: ['comida', 'bebida'],
-    required: true
-  },
-  id_categoria: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Categoria',
-    required: true
-  },
-  id_restaurante: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Restaurante',
-    required: true
-  },
-});
+async function crearPlato({ nombre_plato, tipo, id_categoria, id_restaurante }) {
+  const query = `
+    INSERT INTO platos (nombre_plato, tipo, id_categoria, id_restaurante)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+  `;
+  const values = [nombre_plato, tipo, id_categoria, id_restaurante];
+  const resultado = await pool.query(query, values);
+  return resultado.rows[0];
+}
 
-module.exports = mongoose.model('Plato', platoSchema);
+async function obtenerPlatos() {
+  const query = 'SELECT * FROM platos';
+  const resultado = await pool.query(query);
+  return resultado.rows;
+}
+
+module.exports = {
+  crearPlato,
+  obtenerPlatos,
+};

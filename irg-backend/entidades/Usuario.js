@@ -1,13 +1,24 @@
-// Estructura cliente
-const mongoose = require('mongoose');
+// servicios/Usuario.js
+const pool = require('../baseDatos/db');
 
-const clienteSchema = new mongoose.Schema({
-  nombre: { type: String, required: true },
-  apellidos: { type: String, required: true },
-  telefono: { type: String, required: true },
-  ciudad: { type: String, required: true },
-}, {
-  timestamps: true
-});
+async function registrarUsuario({ nombre, apellidos, telefono, ciudad }) {
+  const query = `
+    INSERT INTO usuarios (nombre, apellidos, telefono, ciudad)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+  `;
+  const values = [nombre, apellidos, telefono, ciudad];
+  const resultado = await pool.query(query, values);
+  return resultado.rows[0];
+}
 
-module.exports = mongoose.model('Usuario', clienteSchema);
+async function obtenerUsuarios() {
+  const query = 'SELECT * FROM usuarios';
+  const resultado = await pool.query(query);
+  return resultado.rows;
+}
+
+module.exports = {
+  registrarUsuario,
+  obtenerUsuarios,
+};

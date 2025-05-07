@@ -1,48 +1,53 @@
-const mongoose = require('mongoose');
+// servicios/Resenia.js
+const pool = require('../baseDatos/db');  // Usamos el pool directamente
 
-const reseniaSchema = new mongoose.Schema({
-  id_usuario: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Usuario',
-    required: true
-  },
-  id_plato: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Plato',
-    required: true
-  },
+async function crearResenia(data) {
+  const {
+    id_usuario, id_plato,
+    p1_satisfaccion, p2_satisfaccion, p3_satisfaccion, p4_satisfaccion, p5_satisfaccion,
+    p1_texto, p2_texto, p3_texto, p4_texto, p5_texto,
+  } = data;
 
-  // Satisfacción (1–5)
-  p1_satisfaccion: { type: Number, min: 1, max: 5, required: true },
-  p2_satisfaccion: { type: Number, min: 1, max: 5, required: true },
-  p3_satisfaccion: { type: Number, min: 1, max: 5, required: true },
-  p4_satisfaccion: { type: Number, min: 1, max: 5, required: true },
-  p5_satisfaccion: { type: Number, min: 1, max: 5, required: true },
+  const total = p1_satisfaccion + p2_satisfaccion + p3_satisfaccion + p4_satisfaccion + p5_satisfaccion;
+  const promedio = parseFloat((total / 5).toFixed(2));
 
-  // Comentarios
-  p1_texto: { type: String, required: true },
-  p2_texto: { type: String, required: true },
-  p3_texto: { type: String, required: true },
-  p4_texto: { type: String, required: true },
-  p5_texto: { type: String, required: true },
+  const query = `
+    INSERT INTO resenias (
+      id_usuario, id_plato,
+      p1_satisfaccion, p2_satisfaccion, p3_satisfaccion, p4_satisfaccion, p5_satisfaccion,
+      p1_texto, p2_texto, p3_texto, p4_texto, p5_texto,
+      promedio_estrellas
+    )
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+    RETURNING *;
+  `;
 
-  // Promedio calculado
-  promedio_estrellas: { type: Number },
-}, {
-  timestamps: true
-});
+  const values = [
+    id_usuario, id_plato,
+    p1_satisfaccion, p2_satisfaccion, p3_satisfaccion, p4_satisfaccion, p5_satisfaccion,
+    p1_texto, p2_texto, p3_texto, p4_texto, p5_texto,
+    promedio
+  ];
 
-// Calcula promedio antes de guardar
-reseniaSchema.pre('save', function (next) {
-  const total =
-    this.p1_satisfaccion +
-    this.p2_satisfaccion +
-    this.p3_satisfaccion +
-    this.p4_satisfaccion +
-    this.p5_satisfaccion;
+  try {
+    const resultado = await pool.query(query, values);
+    return resultado.rows[0];
+  } catch (error) {
+    throw new Error('Error al crear la reseña: ' + error.message);
+  }
+}
 
-  this.promedio_estrellas = parseFloat((total / 5).toFixed(2));
-  next();
-});
+async function obtenerResenias() {
+  const query = 'SELECT * FROM resenias';
+  try {
+    const resultado = await pool.query(query);
+    return resultado.rows;
+  } catch (error) {
+    throw new Error('Error al obtener las reseñas: ' + error.message);
+  }
+}
 
-module.exports = mongoose.model('Resenia', reseniaSchema);
+module.exports = {
+  crearResenia,
+  obtenerResenias,
+};
