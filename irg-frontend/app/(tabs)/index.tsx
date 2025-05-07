@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -7,6 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const router = useRouter(); 
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -51,6 +53,15 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
       </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 4: Register</ThemedText>
+        <TouchableOpacity 
+          style={styles.registerButton}
+          onPress={() => router.push('/(auth)/register')}
+        >
+          <ThemedText style={styles.registerButtonText}>Go to Register</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
@@ -72,4 +83,16 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  registerButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  registerButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  
 });
