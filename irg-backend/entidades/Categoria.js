@@ -1,7 +1,22 @@
-const mongoose = require('mongoose');
+// servicios/Categoria.js
+const pool = require('../baseDatos/db');
 
-const categoriaSchema = new mongoose.Schema({
-  nombre_categoria: { type: String, required: true },
-});
+async function crearCategoria(nombre_categoria) {
+  const query = 'INSERT INTO categorias (nombre_categoria) VALUES ($1) RETURNING *';
+  const values = [nombre_categoria];
 
-module.exports = mongoose.model('Categoria', categoriaSchema);
+  const resultado = await pool.query(query, values);
+  return resultado.rows[0];
+}
+
+async function obtenerCategorias() {
+  const query = 'SELECT * FROM categorias';
+
+  const resultado = await pool.query(query);
+  return resultado.rows;
+}
+
+module.exports = {
+  crearCategoria,
+  obtenerCategorias,
+};
