@@ -38,11 +38,8 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar
-        backgroundColor={"#212121"}
-        barStyle="light-content"
-      />
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#212121' }}>
+      <StatusBar backgroundColor="#2b2b2b" barStyle="light-content" translucent={false} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#2b2b2b' }}>
         <Slot />
       </SafeAreaView>
     </>
