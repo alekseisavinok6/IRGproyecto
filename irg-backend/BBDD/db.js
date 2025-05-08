@@ -15,7 +15,6 @@ conexion.connect(function(err){
   }
 });
 
-
 /*const pool = mysql.createPool({
   host: 'localhost',
   user: 'tu_usuario',       // Por defecto: 'root' en XAMPP
