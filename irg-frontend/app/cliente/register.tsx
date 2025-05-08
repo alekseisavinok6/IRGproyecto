@@ -42,7 +42,7 @@ export default function RegisterScreen() {
         <Text style={styles.prefix}>+34</Text>
         <TextInput
           style={[styles.input, styles.phoneInput]}
-          placeholder="Introduzca su número"
+          placeholder="número de telefono"
           keyboardType="phone-pad"
           value={formData.telefono}
           onChangeText={(text) => setFormData({ ...formData, telefono: text })}
