@@ -43,7 +43,7 @@ export default function RegisterScreen() {
         <Text style={styles.prefix}>+34</Text>
         <TextInput
           style={[styles.input, styles.phoneInput]}
-          placeholder="Introduzca su número"
+          placeholder="número de telefono"
           keyboardType="phone-pad"
           value={formData.telefono}
           onChangeText={(text) => setFormData({ ...formData, telefono: text })}
@@ -58,7 +58,6 @@ export default function RegisterScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Custom CheckBox Replacement */}
       <TouchableOpacity
         onPress={() => setFormData({ ...formData, terminos: !formData.terminos })}
         style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}
